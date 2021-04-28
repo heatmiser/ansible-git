@@ -2,7 +2,7 @@
 - name: set local repo path name and git url with token
   set_fact:
     git_repo_path: "{{ git_url | regex_search('/(.+).git') | regex_replace('.git', '') }}"
-    git_url_with_token: "{{ git_url | regex_replace('github.com', git_token'@github.com') }}"
+    git_url_with_token: "{{ git_url | regex_replace('github\\.com', git_token + '@github\\.com') }}"
 
 - name: git clone "{{ git_url }}"
   shell: git clone "{{ git_url_with_token }}"
