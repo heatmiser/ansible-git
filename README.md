@@ -10,7 +10,8 @@ This role can be used to do a `git pull` and `git push` within a playbook. Below
 | `git_username` | ansible_git | The username for git to use for commits |
 | `git_branch` | master | Branch in the repository |
 | `git_msg` | 'update files with ansible' | Git commit message |
-| `git_remove_local` | false | remove local copy of repository |
+| `git_remove_local` | false | Remove local copy of repository |
+| `base_working_dir` |  | (required) The base working path for git repo operations
 
 ## Example
 ```
