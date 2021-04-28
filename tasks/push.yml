@@ -2,6 +2,7 @@
 - name: set local repo path name
   set_fact:
     git_repo_path: "{{ git_url | regex_search('/(.+).git') | regex_replace('.git', '') }}"
+    git_url_with_token: "{{ git_url | regex_replace('github.com', git_token + '@github.com') }}"
 
 - name: git add all new files
   shell: git add -A
@@ -32,10 +33,15 @@
     chdir: "{{ base_working_dir }}{{ git_repo_path }}"
   ignore_errors: true
 
-- name: git push
-  shell: git push --force
+- name: git push "{{ git_url }}"
+  shell: git push "{{ git_url_with_token }}"
   args:
     chdir: "{{ base_working_dir }}{{ git_repo_path }}"
+
+#- name: git push
+#  shell: git push --force
+#  args:
+#    chdir: "{{ base_working_dir }}{{ git_repo_path }}"
 
 - name: git status
   shell: git status
