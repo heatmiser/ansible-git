@@ -1,8 +1,13 @@
 ---
+- name: set "pre-trim" local repo path name
+  set_fact:
+    git_repo_path_pretrim: >
+      {{ git_repo_url | regex_search('(?!.*\/).+') | regex_replace('.git', '') }}
+    git_url_with_token: "{{ git_url | regex_replace('github.com', git_token + '@github.com') }}"
+
 - name: set local repo path name
   set_fact:
-    git_repo_path: "{{ git_url | regex_search('/(.+).git') | regex_replace('.git', '') }}"
-    git_url_with_token: "{{ git_url | regex_replace('github.com', git_token + '@github.com') }}"
+    git_repo_path: "{{ git_repo_path_pretrim | trim }}"
 
 - name: git add all new files
   shell: git add -A
