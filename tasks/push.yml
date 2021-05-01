@@ -13,6 +13,10 @@
   shell: git add -A
   args:
     chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
+  register: git_add_status
+
+- debug:
+    msg: "{{ git_add_status }}"
 
 - name: git status
   shell: git status
