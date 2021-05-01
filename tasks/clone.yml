@@ -5,6 +5,7 @@
 
 - name: git clone "{{ git_url }}"
   shell: git clone "{{ git_url_with_token }}"
+  no_log: true
   args:
     chdir: "{{ base_working_dir }}"
   ignore_errors: true

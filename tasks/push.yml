@@ -40,6 +40,7 @@
 
 - name: git push "{{ git_url }}"
   shell: git push "{{ git_url_with_token }}"
+  no_log: true
   args:
     chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
 
