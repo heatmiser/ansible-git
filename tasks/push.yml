@@ -37,20 +37,20 @@
   args:
     chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
   ignore_errors: true
+  register: git_commit_status
 
-- name: git push "{{ git_url }}"
-  shell: git push "{{ git_url_with_token }}"
-  no_log: true
-  args:
-    chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
+- block:
+    - name: git push "{{ git_url }}"
+      shell: git push "{{ git_url_with_token }}"
+      no_log: true
+      args:
+        chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
 
-#- name: git push
-#  shell: git push --force
-#  args:
-#    chdir: "{{ base_working_dir }}{{ git_repo_path }}"
-
-- name: git status
-  shell: git status
-  args:
-    chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
-  register: git_add_status
+    - name: git status
+      shell: git status
+      args:
+        chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
+      register: git_add_status
+  when:
+    - git_commit_status.rc == 0
+    - not git_commit_status.stdout is search("nothing to commit")
