@@ -20,29 +20,26 @@
     chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
   register: git_precommit_status
 
-- debug:
-    msg: "{{ git_precommit_status }}"
-
-- name: git username
-  shell: git config user.name "{{ git_username }}"
-  args:
-    chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
-  when: git_username is defined
-
-- name: git email
-  shell: git config user.email "{{ git_email }}"
-  args:
-    chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
-  when: git_email is defined
-
-- name: git commit
-  shell: git commit -a -m "'{{ git_msg }}'"
-  args:
-    chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
-  ignore_errors: true
-  register: git_commit_status
-
 - block:
+    - name: git username
+      shell: git config user.name "{{ git_username }}"
+      args:
+        chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
+      when: git_username is defined
+
+    - name: git email
+      shell: git config user.email "{{ git_email }}"
+      args:
+        chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
+      when: git_email is defined
+
+    - name: git commit
+      shell: git commit -a -m "'{{ git_msg }}'"
+      args:
+        chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
+      ignore_errors: true
+      register: git_commit_status
+  
     - name: git push "{{ git_url }}"
       shell: git push "{{ git_url_with_token }}"
       no_log: true
@@ -53,7 +50,11 @@
       shell: git status
       args:
         chdir: "{{ base_working_dir }}/{{ git_repo_path }}"
-      register: git_add_status
+      register: git_postcommit_status
+
+    - debug:
+        msg: "{{ git_postcommit_status }}"
+
   when:
-    - git_commit_status.rc == 0
-    - not git_commit_status.stdout is search("nothing to commit")
+    - git_precommit_status.rc == 0
+    - not git_precommit_status.stdout is search("nothing to commit")
